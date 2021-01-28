@@ -33,9 +33,14 @@ private:
 	void StartShooting();
 	void StopShooting();
 
+	void PickItem();
+
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AGunBase> GunClass;
 
 	UPROPERTY()
 	AGunBase* Gun;
+
+	UPROPERTY(EditAnywhere)
+	float PickUpRange = 400.0f;
 };

@@ -4,6 +4,10 @@
 #include "ShooterCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "DemoShooter/Actors/GunBase.h"
+#include "DrawDebugHelpers.h"
+#include "DemoShooter/Actors/WeaponCounter.h"
+
+#define OUT
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -47,6 +51,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AShooterCharacter::StartShooting);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Released, this, &AShooterCharacter::StopShooting);
+	PlayerInputComponent->BindAction(TEXT("Pick"), IE_Pressed, this, &AShooterCharacter::PickItem);
 }
 
 void AShooterCharacter::MoveForward(float AxisValue)
@@ -67,4 +72,35 @@ void AShooterCharacter::StartShooting()
 void AShooterCharacter::StopShooting()
 {
 	Gun->SetContinueShooting(false);
+}
+
+void AShooterCharacter::PickItem()
+{
+	FVector Location;
+	FRotator Rotation;
+	GetController()->GetPlayerViewPoint(OUT Location, OUT Rotation);
+	//DrawDebugCamera(GetWorld(), Location, Rotation, 90, 1, FColor::Red, false, 2);
+
+	FVector End = Location + Rotation.Vector() * PickUpRange;
+	//DrawDebugLine(GetWorld(), Location, End, FColor::Red, false, 2);
+
+	FHitResult Hit;
+	FCollisionObjectQueryParams QueryParams;
+	QueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldDynamic);
+	bool bSuccess = GetWorld()->LineTraceSingleByObjectType(OUT Hit, Location, End, QueryParams);
+	if (bSuccess)
+	{
+		//DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, false, 2);
+		
+		AWeaponCounter* WeaponCounter = Cast<AWeaponCounter>(Hit.GetActor());
+		if (WeaponCounter != nullptr)
+		{
+			if (Gun->Destroy())
+			{
+				Gun = GetWorld()->SpawnActor<AGunBase>(WeaponCounter->GetGunClass());
+				Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+				Gun->SetOwner(this);
+			}
+		}
+	}
 }
