@@ -4,16 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GunBase.generated.h"
+#include "WeaponCounter.generated.h"
+
+class AGunBase;
+class USphereComponent;
 
 UCLASS()
-class DEMOSHOOTER_API AGunBase : public AActor
+class DEMOSHOOTER_API AWeaponCounter : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AGunBase();
+	AWeaponCounter();
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,36 +26,19 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void PullTrigger();
-
-	void SetContinueShooting(bool bContinue);
+	TSubclassOf<AGunBase> GetGunClass() const;
 
 private:
 	UPROPERTY(VisibleAnywhere)
-	USceneComponent* Root;
+	UStaticMeshComponent* StaticMesh;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* SkeletalMesh;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* MuzzleEmitter;
+	USphereComponent* SphereCollision;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* HitEmitter;
-
-	UPROPERTY(EditAnywhere)
-	float ShootMaxRange = 1000.0f;
-
-	UPROPERTY(EditAnywhere)
-	float FireRate = 0.2f;
-
-	UPROPERTY(EditAnywhere)
-	float Damage = 20.0f;
-
-	bool bContinueShooting = false;
-
-	FTimerHandle FireRateTimer;;
-
-	bool BulletTrace(FHitResult& Hit, FVector& ShootDirection);
+	TSubclassOf<AGunBase> GunClass;
 
 };
