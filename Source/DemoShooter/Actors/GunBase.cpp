@@ -26,7 +26,6 @@ void AGunBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorld()->GetTimerManager().SetTimer(FireRateTimer, this, &AGunBase::PullTrigger, FireRate, true);
 }
 
 // Called every frame
@@ -92,5 +91,9 @@ bool AGunBase::BulletTrace(FHitResult& Hit, FVector& ShootDirection)
 void AGunBase::SetContinueShooting(bool bContinue)
 {
 	this->bContinueShooting = bContinue;
+	if (this->bContinueShooting)
+	{
+		GetWorld()->GetTimerManager().SetTimer(FireRateTimer, this, &AGunBase::PullTrigger, FireRate, true, 0);
+	}
 }
 
