@@ -2,6 +2,8 @@
 
 
 #include "ShooterCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "DemoShooter/Actors/GunBase.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -15,7 +17,16 @@ AShooterCharacter::AShooterCharacter()
 void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (GunClass == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("ShooterCharacter has not a GunClass selected"));
+		return;
+	}
+
+	Gun = GetWorld()->SpawnActor<AGunBase>(GunClass);
+	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+	Gun->SetOwner(this);
 }
 
 // Called every frame
@@ -35,6 +46,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AShooterCharacter::Shoot);
 }
 
 void AShooterCharacter::MoveForward(float AxisValue)
@@ -45,4 +57,9 @@ void AShooterCharacter::MoveForward(float AxisValue)
 void AShooterCharacter::MoveRight(float AxisValue)
 {
 	AddMovementInput(GetActorRightVector() * AxisValue);
+}
+
+void AShooterCharacter::Shoot()
+{
+	Gun->PullTrigger();
 }
