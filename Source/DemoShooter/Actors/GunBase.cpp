@@ -25,7 +25,8 @@ AGunBase::AGunBase()
 void AGunBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GetWorld()->GetTimerManager().SetTimer(FireRateTimer, this, &AGunBase::PullTrigger, FireRate, true);
 }
 
 // Called every frame
@@ -37,6 +38,10 @@ void AGunBase::Tick(float DeltaTime)
 
 void AGunBase::PullTrigger()
 {
+	if (!bContinueShooting) {
+		return;
+	}
+
 	UGameplayStatics::SpawnEmitterAttached(MuzzleEmitter, SkeletalMesh, TEXT("SK_Wep_Muzzle"));
 
 	FVector ShootDirection;
@@ -82,5 +87,10 @@ bool AGunBase::BulletTrace(FHitResult& Hit, FVector& ShootDirection)
 	CollisionParams.AddIgnoredActor(this);
 	CollisionParams.AddIgnoredActor(GetOwner());
 	return GetWorld()->LineTraceSingleByChannel(OUT Hit, ViewPointLocation, EndLocation, ECollisionChannel::ECC_GameTraceChannel1, CollisionParams);
+}
+
+void AGunBase::SetContinueShooting(bool bContinue)
+{
+	this->bContinueShooting = bContinue;
 }
 

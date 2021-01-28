@@ -25,6 +25,9 @@ public:
 
 	void PullTrigger();
 
+	void SetContinueShooting(bool bContinue);
+
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;
@@ -40,6 +43,13 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float ShootMaxRange = 1000.0f;
+
+	UPROPERTY(EditAnywhere)
+	float FireRate = 0.2f;
+
+	bool bContinueShooting = false;
+
+	FTimerHandle FireRateTimer;;
 
 	bool BulletTrace(FHitResult& Hit, FVector& ShootDirection);
 

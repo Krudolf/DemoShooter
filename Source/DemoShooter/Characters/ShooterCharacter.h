@@ -30,7 +30,8 @@ protected:
 private:
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
-	void Shoot();
+	void StartShooting();
+	void StopShooting();
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AGunBase> GunClass;
