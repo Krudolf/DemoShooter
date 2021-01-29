@@ -28,18 +28,27 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	// FUNTIONS
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void StartShooting();
 	void StopShooting();
+	void ChangeWeapon(float AxisValue);
 
 	void PickItem();
+	void CreateGun(TSubclassOf<AGunBase> GunClass);
 
+
+	// VARIABLES
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AGunBase> GunClass;
+		TSubclassOf<AGunBase> GunClass;
 
 	UPROPERTY()
-	AGunBase* Gun;
+	AGunBase* ActiveGun = nullptr;
+
+	TArray<AGunBase*> WeaponInventory;
+
+	int32 ActiveWeaponIndex = 0;
 
 	UPROPERTY(EditAnywhere)
 	float PickUpRange = 400.0f;

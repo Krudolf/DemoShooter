@@ -28,9 +28,12 @@ void AShooterCharacter::BeginPlay()
 		return;
 	}
 
-	Gun = GetWorld()->SpawnActor<AGunBase>(GunClass);
+	WeaponInventory.Push(nullptr);
+	WeaponInventory.Push(nullptr);
+
+	/*Gun = GetWorld()->SpawnActor<AGunBase>(GunClass);
 	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
-	Gun->SetOwner(this);
+	Gun->SetOwner(this);*/
 }
 
 // Called every frame
@@ -52,6 +55,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AShooterCharacter::StartShooting);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Released, this, &AShooterCharacter::StopShooting);
 	PlayerInputComponent->BindAction(TEXT("Pick"), IE_Pressed, this, &AShooterCharacter::PickItem);
+	PlayerInputComponent->BindAxis(TEXT("ChangeWeapon"), this, &AShooterCharacter::ChangeWeapon);
 }
 
 void AShooterCharacter::MoveForward(float AxisValue)
@@ -66,12 +70,41 @@ void AShooterCharacter::MoveRight(float AxisValue)
 
 void AShooterCharacter::StartShooting()
 {
-	Gun->SetContinueShooting(true);
+	if (ActiveGun != nullptr)
+	{
+		ActiveGun->SetContinueShooting(true);
+	}
 }
 
 void AShooterCharacter::StopShooting()
 {
-	Gun->SetContinueShooting(false);
+	if (ActiveGun != nullptr)
+	{
+		ActiveGun->SetContinueShooting(false);
+	}
+}
+
+void AShooterCharacter::ChangeWeapon(float AxisValue)
+{
+	int32 OldWeaponIndex = ActiveWeaponIndex;
+	ActiveWeaponIndex = FMath::Clamp(ActiveWeaponIndex + (int32)AxisValue, 0, 1);
+
+	if (OldWeaponIndex == ActiveWeaponIndex)
+	{
+		return;
+	}
+
+	ActiveGun = WeaponInventory[ActiveWeaponIndex];
+
+	if (WeaponInventory[OldWeaponIndex] != nullptr)
+	{
+		WeaponInventory[OldWeaponIndex]->SetActorHiddenInGame(true);
+	}
+
+	if (WeaponInventory[ActiveWeaponIndex] != nullptr)
+	{
+		WeaponInventory[ActiveWeaponIndex]->SetActorHiddenInGame(false);
+	}
 }
 
 void AShooterCharacter::PickItem()
@@ -95,12 +128,28 @@ void AShooterCharacter::PickItem()
 		AWeaponCounter* WeaponCounter = Cast<AWeaponCounter>(Hit.GetActor());
 		if (WeaponCounter != nullptr)
 		{
-			if (Gun->Destroy())
-			{
-				Gun = GetWorld()->SpawnActor<AGunBase>(WeaponCounter->GetGunClass());
-				Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
-				Gun->SetOwner(this);
-			}
+			CreateGun(WeaponCounter->GetGunClass());
 		}
 	}
+}
+
+void AShooterCharacter::CreateGun(TSubclassOf<AGunBase> NewGunClass)
+{
+	if (WeaponInventory[0] == nullptr)
+	{
+		ActiveWeaponIndex = 0;
+	}
+	else if (WeaponInventory[1] == nullptr)
+	{
+		WeaponInventory[0]->SetActorHiddenInGame(true);
+		ActiveWeaponIndex = 1;
+	}
+	else
+	{
+		WeaponInventory[ActiveWeaponIndex]->Destroy();
+	}
+	WeaponInventory[ActiveWeaponIndex] = GetWorld()->SpawnActor<AGunBase>(NewGunClass);
+	WeaponInventory[ActiveWeaponIndex]->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+	WeaponInventory[ActiveWeaponIndex]->SetOwner(this);
+	ActiveGun = WeaponInventory[ActiveWeaponIndex];
 }
