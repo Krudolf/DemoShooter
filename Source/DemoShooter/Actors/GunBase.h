@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "GunBase.generated.h"
 
+class ABulletBase;
+
 UCLASS()
 class DEMOSHOOTER_API AGunBase : public AActor
 {
@@ -30,24 +32,20 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;
-
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* SkeletalMesh;
-
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* MuzzleEmitter;
-
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* HitEmitter;
-
 	UPROPERTY(EditAnywhere)
-	float ShootMaxRange = 1000.0f;
-
+	float ShootMaxRange = 10000.0f;
 	UPROPERTY(EditAnywhere)
 	float FireRate = 0.2f;
-
 	UPROPERTY(EditAnywhere)
 	float Damage = 20.0f;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ABulletBase> BulletClass;
 
 	bool bContinueShooting = false;
 

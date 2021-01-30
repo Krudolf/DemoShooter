@@ -4,7 +4,9 @@
 #include "GunBase.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "DrawDebugHelpers.h"
+#include "DemoShooter/Actors/BulletBase.h"
 
 #define OUT
 
@@ -48,10 +50,16 @@ void AGunBase::PullTrigger()
 	bool bSuccess = BulletTrace(OUT Hit, OUT ShootDirection);
 	if (bSuccess)
 	{
-		//DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true);
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEmitter, Hit.Location, ShootDirection.Rotation());
+		DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true, 2);
 		
-		//TODO: Check if we hit an enemy or something
+		const FVector SpawnLocation = SkeletalMesh->GetSocketLocation(TEXT("SK_Wep_Muzzle"));
+		FRotator HitRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, Hit.Location);
+
+		ABulletBase* Bullet = GetWorld()->SpawnActor<ABulletBase>(BulletClass, SpawnLocation, HitRotation);
+		Bullet->SetOwner(this);
+		Bullet->SetBulletVelocity(HitRotation.Vector());
+
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEmitter, Hit.Location, ShootDirection.Rotation());
 	}
 
 }
