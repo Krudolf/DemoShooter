@@ -16,16 +16,16 @@ class DEMOSHOOTER_API ABulletBase : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ABulletBase();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void SetBulletVelocity(FVector ForwardVector);
+
+	void setDamage(float InDamage);
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -39,6 +39,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float BulletSpeed = 20000.f;
+
+	float Damage;
+	FVector ForwardVector;
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

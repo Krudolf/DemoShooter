@@ -36,14 +36,22 @@ void ABulletBase::Tick(float DeltaTime)
 
 }
 
-void ABulletBase::SetBulletVelocity(FVector ForwardVector)
+void ABulletBase::SetBulletVelocity(FVector InForwardVector)
 {
+	ForwardVector = InForwardVector;
 	ProjectileMovement->Velocity = ForwardVector * BulletSpeed;
+}
+
+void ABulletBase::setDamage(float InDamage)
+{
+	Damage = InDamage;
 }
 
 void ABulletBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s has hitted something and is going to be deleted"), *GetName());
+	FPointDamageEvent DamageEvent(Damage, Hit, ForwardVector, nullptr);
+	OtherActor->TakeDamage(Damage, DamageEvent, GetOwner()->GetInstigatorController(), this);
+	OtherComp->AddImpulse(NormalImpulse);
 
 	Destroy();
 }
