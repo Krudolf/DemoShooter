@@ -3,6 +3,7 @@
 
 #include "ObjectSpawner.h"
 #include "DemoShooter/Actors/BottleTarget.h"
+#include "Math/UnrealMathUtility.h"
 
 // Sets default values
 AObjectSpawner::AObjectSpawner()
@@ -17,6 +18,7 @@ void AObjectSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	TSubclassOf<ABottleTarget> BottleTargetClass = BottleTargetClasses[FMath::RandRange(0, BottleTargetClasses.Num() - 1)];
 	BottleSpawned = GetWorld()->SpawnActor<ABottleTarget>(BottleTargetClass, RootComponent->GetComponentTransform());
 	BottleSpawned->SetOwner(this);
 }
@@ -42,6 +44,7 @@ void AObjectSpawner::Respawn()
 {
 	BottleSpawned->Destroy();
 	
+	TSubclassOf<ABottleTarget> BottleTargetClass = BottleTargetClasses[FMath::RandRange(0, BottleTargetClasses.Num() - 1)];
 	BottleSpawned = GetWorld()->SpawnActor<ABottleTarget>(BottleTargetClass, RootComponent->GetComponentTransform());
 	BottleSpawned->SetOwner(this);
 }

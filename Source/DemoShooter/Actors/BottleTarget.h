@@ -29,4 +29,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* MeshComponent;
 
+	UPROPERTY(EditAnywhere)
+	int32 Points = 10;
+
 };

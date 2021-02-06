@@ -25,12 +25,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-
 	void CheckRespawn();
 
 private:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ABottleTarget> BottleTargetClass;
+	TArray<TSubclassOf<ABottleTarget>> BottleTargetClasses;
 
 	UPROPERTY(EditAnywhere)
 	float RespawnTime = 2.0f;

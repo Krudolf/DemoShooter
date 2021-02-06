@@ -3,6 +3,7 @@
 
 #include "BulletBase.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABulletBase::ABulletBase()
@@ -26,7 +27,6 @@ void ABulletBase::BeginPlay()
 	Super::BeginPlay();
 
 	BulletMesh->OnComponentHit.AddDynamic(this, &ABulletBase::OnHit);
-	
 }
 
 // Called every frame
@@ -50,7 +50,7 @@ void ABulletBase::setDamage(float InDamage)
 void ABulletBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	FPointDamageEvent DamageEvent(Damage, Hit, ForwardVector, nullptr);
-	OtherActor->TakeDamage(Damage, DamageEvent, GetOwner()->GetInstigatorController(), this);
+	OtherActor->TakeDamage(Damage, DamageEvent, UGameplayStatics::GetPlayerController(GetWorld(), 0), this);
 
 	Destroy();
 }

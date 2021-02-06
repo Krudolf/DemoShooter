@@ -14,6 +14,14 @@ class DEMOSHOOTER_API AShooterPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+public:
+	void AddPoints(int32 PointsToAdd);
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetCurrentPoints();
+
+	void CreatePointsWidget();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -22,6 +30,12 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> HUDClass;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> PointsClass;
+
 	UPROPERTY()
 	UUserWidget* HUD;
+
+	UPROPERTY(EditAnywhere)
+	int32 CurrentPoints = 0;
 };

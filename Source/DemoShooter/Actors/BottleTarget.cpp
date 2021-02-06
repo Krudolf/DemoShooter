@@ -3,6 +3,7 @@
 
 #include "BottleTarget.h"
 #include "DemoShooter/Actors/ObjectSpawner.h"
+#include "DemoShooter/PlayerControllers/ShooterPlayerController.h"
 
 // Sets default values
 ABottleTarget::ABottleTarget()
@@ -42,6 +43,12 @@ float ABottleTarget::TakeDamage(float DamageAmount, struct FDamageEvent const& D
 	if (Spawner != nullptr)
 	{
 		Spawner->CheckRespawn();
+	}
+
+	AShooterPlayerController* PlayerController = Cast<AShooterPlayerController>(EventInstigator);
+	if (PlayerController != nullptr)
+	{
+		PlayerController->AddPoints(Points);
 	}
 
 	return DamageAmount;

@@ -41,7 +41,7 @@ private:
 
 	// VARIABLES
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<AGunBase> GunClass;
+	TSubclassOf<AGunBase> GunClass;
 
 	UPROPERTY()
 	AGunBase* ActiveGun = nullptr;
