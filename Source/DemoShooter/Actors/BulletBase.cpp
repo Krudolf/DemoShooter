@@ -51,7 +51,6 @@ void ABulletBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 {
 	FPointDamageEvent DamageEvent(Damage, Hit, ForwardVector, nullptr);
 	OtherActor->TakeDamage(Damage, DamageEvent, GetOwner()->GetInstigatorController(), this);
-	OtherComp->AddImpulse(NormalImpulse);
 
 	Destroy();
 }

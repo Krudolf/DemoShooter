@@ -2,12 +2,13 @@
 
 
 #include "BottleTarget.h"
+#include "DemoShooter/Actors/ObjectSpawner.h"
 
 // Sets default values
 ABottleTarget::ABottleTarget()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bottle mesh"));
 	RootComponent = MeshComponent;
@@ -25,5 +26,24 @@ void ABottleTarget::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+float ABottleTarget::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	if (DamageEvent.GetTypeID() == FPointDamageEvent::ClassID)
+	{
+		const FPointDamageEvent* PointDamageEvent = (FPointDamageEvent*)&DamageEvent;
+		MeshComponent->AddImpulse(PointDamageEvent->ShotDirection);
+	}
+
+	AObjectSpawner* Spawner = Cast<AObjectSpawner>(GetOwner());
+	if (Spawner != nullptr)
+	{
+		Spawner->CheckRespawn();
+	}
+
+	return DamageAmount;
 }
 

@@ -7,7 +7,6 @@
 #include "ObjectSpawner.generated.h"
 
 class ABottleTarget;
-class USphereComponent;
 
 UCLASS()
 class DEMOSHOOTER_API AObjectSpawner : public ATargetPoint
@@ -26,18 +25,21 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
+	void CheckRespawn();
+
 private:
 	UPROPERTY(EditAnywhere)
-	USphereComponent* SphereCollision;
+	TSubclassOf<ABottleTarget> BottleTargetClass;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ABottleTarget> BottleTargetClass;
+	float RespawnTime = 2.0f;
 
 	ABottleTarget* BottleSpawned;
 
 	FTimerHandle RespawnHandle;
 
 	// FUNCTIONS
-	void CheckRespawn();
+	void Respawn();
 
 };

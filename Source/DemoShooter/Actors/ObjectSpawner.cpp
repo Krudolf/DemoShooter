@@ -2,7 +2,6 @@
 
 
 #include "ObjectSpawner.h"
-#include "Components/SphereComponent.h"
 #include "DemoShooter/Actors/BottleTarget.h"
 
 // Sets default values
@@ -11,10 +10,6 @@ AObjectSpawner::AObjectSpawner()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere collision"));
-	SphereCollision->SetRelativeLocation(GetActorLocation());
-	SphereCollision->SetSphereRadius(12);
-	SphereCollision->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -23,15 +18,7 @@ void AObjectSpawner::BeginPlay()
 	Super::BeginPlay();
 	
 	BottleSpawned = GetWorld()->SpawnActor<ABottleTarget>(BottleTargetClass, RootComponent->GetComponentTransform());
-
-	GetWorld()->GetTimerManager().SetTimer(RespawnHandle, this, &AObjectSpawner::CheckRespawn, 2.0f, true);
-
-	/*
-	
-		TODO: When I hitted the bottle and after 2 seconds destroy it (or break it and destroy) 
-			then call the timer and respawn after 2 seconds or so
-	
-	*/
+	BottleSpawned->SetOwner(this);
 }
 
 // Called every frame
@@ -43,11 +30,19 @@ void AObjectSpawner::Tick(float DeltaTime)
 
 void AObjectSpawner::CheckRespawn()
 {
-	if (!SphereCollision->IsOverlappingActor(BottleSpawned))
+	if (GetWorld()->GetTimerManager().TimerExists(RespawnHandle))
 	{
-		BottleSpawned->Destroy();
-
-		BottleSpawned = GetWorld()->SpawnActor<ABottleTarget>(BottleTargetClass, RootComponent->GetComponentTransform());
+		return;
 	}
+
+	GetWorld()->GetTimerManager().SetTimer(RespawnHandle, this, &AObjectSpawner::Respawn, RespawnTime, false);
+}
+
+void AObjectSpawner::Respawn()
+{
+	BottleSpawned->Destroy();
+	
+	BottleSpawned = GetWorld()->SpawnActor<ABottleTarget>(BottleTargetClass, RootComponent->GetComponentTransform());
+	BottleSpawned->SetOwner(this);
 }
 

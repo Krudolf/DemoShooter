@@ -50,7 +50,7 @@ void AGunBase::PullTrigger()
 	bool bSuccess = BulletTrace(OUT Hit, OUT ShootDirection);
 	if (bSuccess)
 	{
-		DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, false, 2);
+		//DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, false, 2);
 		
 		const FVector SpawnLocation = SkeletalMesh->GetSocketLocation(TEXT("SK_Wep_Muzzle"));
 		FRotator HitRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, Hit.Location);
@@ -62,7 +62,6 @@ void AGunBase::PullTrigger()
 
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEmitter, Hit.Location, ShootDirection.Rotation());
 	}
-
 }
 
 bool AGunBase::BulletTrace(FHitResult& Hit, FVector& ShootDirection)
