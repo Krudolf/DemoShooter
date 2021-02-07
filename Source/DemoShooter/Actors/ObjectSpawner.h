@@ -27,7 +27,7 @@ public:
 
 	void CheckRespawn();
 
-	void Respawn();
+	void ClearAndDestroy();
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -36,10 +36,20 @@ private:
 	UPROPERTY(EditAnywhere)
 	float RespawnTime = 2.0f;
 
+	UPROPERTY(EditAnywhere)
+	float RespawnVariationTime = 0.5f;
+
+	UPROPERTY(EditAnywhere)
+	float DestroyTime = 5.0f;
+
 	ABottleTarget* BottleSpawned;
 
 	FTimerHandle RespawnHandle;
+	FTimerHandle DestroyHandle;
 
 	// FUNCTIONS
+	void Respawn();
+
+	void DestroyAndRespawn();
 
 };

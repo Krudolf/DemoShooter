@@ -17,10 +17,15 @@ class DEMOSHOOTER_API AShooterPlayerController : public APlayerController
 public:
 	void AddPoints(int32 PointsToAdd);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintPure)
 	int32 GetCurrentPoints();
 
+	UFUNCTION(BlueprintPure)
+	int32 GetMaxPoints();
+
 	void CreatePointsWidget();
+
+	void CheckMaxPoints();
 
 protected:
 	// Called when the game starts or when spawned
@@ -38,6 +43,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 CurrentPoints = 0;
+
+	int32 MaxPoints = 0;
 
 	// FUNCTIONS
 	virtual void SetupInputComponent() override;

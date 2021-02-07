@@ -16,5 +16,17 @@ class DEMOSHOOTER_API AShooterGameMode : public AGameModeBase
 
 public:
 	void StartSpawners();
-	
+
+	UPROPERTY(BlueprintReadOnly)
+	FTimerHandle BottleGameHandler;
+
+private:
+	TArray<AActor*> FoundTextRender;
+	TArray<AActor*> FoundSpawners;
+
+	UPROPERTY(EditAnywhere)
+	float GameTime = 15.0f;
+
+
+	void EndGame();
 };

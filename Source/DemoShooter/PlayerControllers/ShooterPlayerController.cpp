@@ -27,6 +27,8 @@ void AShooterPlayerController::SetupInputComponent()
 
 void AShooterPlayerController::StartSpawners()
 {
+	CurrentPoints = 0;
+
 	AGameModeBase* GameModeBase = UGameplayStatics::GetGameMode(GetWorld());
 	AShooterGameMode* ShooterGameMode = Cast<AShooterGameMode>(GameModeBase);
 	
@@ -48,11 +50,24 @@ int32 AShooterPlayerController::GetCurrentPoints()
 	return CurrentPoints;
 }
 
+int32 AShooterPlayerController::GetMaxPoints()
+{
+	return MaxPoints;
+}
+
 void AShooterPlayerController::CreatePointsWidget()
 {
 	UUserWidget* PointsWidget = CreateWidget(this, PointsClass);
 	if (PointsWidget != nullptr)
 	{
 		PointsWidget->AddToViewport();
+	}
+}
+
+void AShooterPlayerController::CheckMaxPoints()
+{
+	if (CurrentPoints > MaxPoints)
+	{
+		MaxPoints = CurrentPoints;
 	}
 }

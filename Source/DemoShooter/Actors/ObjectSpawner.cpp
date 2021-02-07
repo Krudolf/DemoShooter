@@ -17,10 +17,6 @@ AObjectSpawner::AObjectSpawner()
 void AObjectSpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	/*TSubclassOf<ABottleTarget> BottleTargetClass = BottleTargetClasses[FMath::RandRange(0, BottleTargetClasses.Num() - 1)];
-	BottleSpawned = GetWorld()->SpawnActor<ABottleTarget>(BottleTargetClass, RootComponent->GetComponentTransform());
-	BottleSpawned->SetOwner(this);*/
 }
 
 // Called every frame
@@ -32,12 +28,26 @@ void AObjectSpawner::Tick(float DeltaTime)
 
 void AObjectSpawner::CheckRespawn()
 {
+	GetWorld()->GetTimerManager().ClearTimer(DestroyHandle);
+
 	if (GetWorld()->GetTimerManager().TimerExists(RespawnHandle))
 	{
 		return;
 	}
 
-	GetWorld()->GetTimerManager().SetTimer(RespawnHandle, this, &AObjectSpawner::Respawn, RespawnTime, false);
+	float Variation = FMath::RandRange(-RespawnVariationTime, RespawnVariationTime);
+	GetWorld()->GetTimerManager().SetTimer(RespawnHandle, this, &AObjectSpawner::Respawn, RespawnTime+Variation, false);
+}
+
+void AObjectSpawner::ClearAndDestroy()
+{
+	if (BottleSpawned != nullptr)
+	{
+		BottleSpawned->Destroy();
+	}
+
+	GetWorld()->GetTimerManager().ClearTimer(DestroyHandle);
+	GetWorld()->GetTimerManager().ClearTimer(RespawnHandle);
 }
 
 void AObjectSpawner::Respawn()
@@ -50,5 +60,17 @@ void AObjectSpawner::Respawn()
 	TSubclassOf<ABottleTarget> BottleTargetClass = BottleTargetClasses[FMath::RandRange(0, BottleTargetClasses.Num() - 1)];
 	BottleSpawned = GetWorld()->SpawnActor<ABottleTarget>(BottleTargetClass, RootComponent->GetComponentTransform());
 	BottleSpawned->SetOwner(this);
+
+	GetWorld()->GetTimerManager().SetTimer(DestroyHandle, this, &AObjectSpawner::DestroyAndRespawn, DestroyTime, false);
+}
+
+void AObjectSpawner::DestroyAndRespawn()
+{
+	if (BottleSpawned != nullptr)
+	{
+		BottleSpawned->Destroy();
+	}
+
+	CheckRespawn();
 }
 
