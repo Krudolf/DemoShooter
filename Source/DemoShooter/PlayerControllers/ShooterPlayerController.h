@@ -38,4 +38,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 CurrentPoints = 0;
+
+	// FUNCTIONS
+	virtual void SetupInputComponent() override;
+
+	void StartSpawners();
 };

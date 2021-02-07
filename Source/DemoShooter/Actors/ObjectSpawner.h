@@ -27,6 +27,8 @@ public:
 
 	void CheckRespawn();
 
+	void Respawn();
+
 private:
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<ABottleTarget>> BottleTargetClasses;
@@ -39,6 +41,5 @@ private:
 	FTimerHandle RespawnHandle;
 
 	// FUNCTIONS
-	void Respawn();
 
 };

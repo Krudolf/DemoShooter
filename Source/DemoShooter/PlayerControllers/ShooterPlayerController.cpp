@@ -3,6 +3,9 @@
 
 #include "ShooterPlayerController.h"
 #include "Blueprint/UserWidget.h"
+#include "DemoShooter/GameModes/ShooterGameMode.h"
+#include "Kismet/GameplayStatics.h"
+
 
 void AShooterPlayerController::BeginPlay()
 {
@@ -15,10 +18,29 @@ void AShooterPlayerController::BeginPlay()
 	CreatePointsWidget();
 }
 
+void AShooterPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	InputComponent->BindAction(TEXT("Start"), IE_Pressed, this, &AShooterPlayerController::StartSpawners);
+}
+
+void AShooterPlayerController::StartSpawners()
+{
+	AGameModeBase* GameModeBase = UGameplayStatics::GetGameMode(GetWorld());
+	AShooterGameMode* ShooterGameMode = Cast<AShooterGameMode>(GameModeBase);
+	
+	if(ShooterGameMode == nullptr)
+	{
+		return;
+	}
+
+	ShooterGameMode->StartSpawners();
+}
+
 void AShooterPlayerController::AddPoints(int32 PointsToAdd)
 {
 	CurrentPoints += PointsToAdd;
-	UE_LOG(LogTemp, Warning, TEXT("Points %i"), CurrentPoints);
 }
 
 int32 AShooterPlayerController::GetCurrentPoints()

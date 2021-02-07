@@ -18,9 +18,9 @@ void AObjectSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	TSubclassOf<ABottleTarget> BottleTargetClass = BottleTargetClasses[FMath::RandRange(0, BottleTargetClasses.Num() - 1)];
+	/*TSubclassOf<ABottleTarget> BottleTargetClass = BottleTargetClasses[FMath::RandRange(0, BottleTargetClasses.Num() - 1)];
 	BottleSpawned = GetWorld()->SpawnActor<ABottleTarget>(BottleTargetClass, RootComponent->GetComponentTransform());
-	BottleSpawned->SetOwner(this);
+	BottleSpawned->SetOwner(this);*/
 }
 
 // Called every frame
@@ -42,7 +42,10 @@ void AObjectSpawner::CheckRespawn()
 
 void AObjectSpawner::Respawn()
 {
-	BottleSpawned->Destroy();
+	if (BottleSpawned != nullptr)
+	{
+		BottleSpawned->Destroy();
+	}
 	
 	TSubclassOf<ABottleTarget> BottleTargetClass = BottleTargetClasses[FMath::RandRange(0, BottleTargetClasses.Num() - 1)];
 	BottleSpawned = GetWorld()->SpawnActor<ABottleTarget>(BottleTargetClass, RootComponent->GetComponentTransform());
