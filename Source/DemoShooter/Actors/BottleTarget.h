@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "BottleTarget.generated.h"
 
+class UDestructibleComponent;
+class UDestructibleMesh;
+
 UCLASS()
 class DEMOSHOOTER_API ABottleTarget : public AActor
 {
@@ -27,7 +30,13 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* MeshComponent;
+	USceneComponent* Root;
+	
+	UPROPERTY(EditAnywhere)
+	UDestructibleComponent* DestructibleMeshComponent;
+
+	UPROPERTY(EditAnywhere)
+	UDestructibleMesh* DestructibleMesh;
 
 	UPROPERTY(EditAnywhere)
 	int32 Points = 10;

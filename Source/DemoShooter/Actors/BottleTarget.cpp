@@ -4,6 +4,7 @@
 #include "BottleTarget.h"
 #include "DemoShooter/Actors/ObjectSpawner.h"
 #include "DemoShooter/PlayerControllers/ShooterPlayerController.h"
+#include "DestructibleComponent.h"
 
 // Sets default values
 ABottleTarget::ABottleTarget()
@@ -11,8 +12,12 @@ ABottleTarget::ABottleTarget()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bottle mesh"));
-	RootComponent = MeshComponent;
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootComponent = Root;
+
+	DestructibleMeshComponent = CreateDefaultSubobject<UDestructibleComponent>(TEXT("Bottle mesh"));
+	DestructibleMeshComponent->SetupAttachment(Root);
+	DestructibleMeshComponent->SetDestructibleMesh(DestructibleMesh);
 }
 
 // Called when the game starts or when spawned
@@ -36,7 +41,7 @@ float ABottleTarget::TakeDamage(float DamageAmount, struct FDamageEvent const& D
 	if (DamageEvent.GetTypeID() == FPointDamageEvent::ClassID)
 	{
 		const FPointDamageEvent* PointDamageEvent = (FPointDamageEvent*)&DamageEvent;
-		MeshComponent->AddImpulse(PointDamageEvent->ShotDirection);
+		DestructibleMeshComponent->AddImpulse(PointDamageEvent->ShotDirection);
 	}
 
 	AObjectSpawner* Spawner = Cast<AObjectSpawner>(GetOwner());
