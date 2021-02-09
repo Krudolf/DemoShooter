@@ -42,6 +42,8 @@ float ABottleTarget::TakeDamage(float DamageAmount, struct FDamageEvent const& D
 	{
 		const FPointDamageEvent* PointDamageEvent = (FPointDamageEvent*)&DamageEvent;
 		DestructibleMeshComponent->AddImpulse(PointDamageEvent->ShotDirection);
+		DestructibleMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		DestructibleMeshComponent->UpdateCollisionProfile();
 	}
 
 	AObjectSpawner* Spawner = Cast<AObjectSpawner>(GetOwner());

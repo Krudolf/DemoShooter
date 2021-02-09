@@ -96,6 +96,15 @@ void AShooterCharacter::ChangeWeapon(float AxisValue)
 
 	ActiveGun = WeaponInventory[ActiveWeaponIndex];
 
+	if (ActiveGun->GunType == EGunType::GT_Pistol)
+	{
+		GetMesh()->SetAnimInstanceClass(PistolAnimation);
+	}
+	else if (ActiveGun->GunType == EGunType::GT_Rifle)
+	{
+		GetMesh()->SetAnimInstanceClass(RifleAnimation);
+	}
+
 	if (WeaponInventory[OldWeaponIndex] != nullptr)
 	{
 		WeaponInventory[OldWeaponIndex]->SetActorHiddenInGame(true);

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "DemoShooter/Enums/GunType.h"
 #include "GunBase.generated.h"
 
 class ABulletBase;
@@ -29,6 +30,9 @@ public:
 
 	void SetContinueShooting(bool bContinue);
 
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<EGunType> GunType;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;
@@ -47,9 +51,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ABulletBase> BulletClass;
 
-	bool bContinueShooting = false;
+	FTimerHandle FireRateTimer;
 
-	FTimerHandle FireRateTimer;;
 
 	bool BulletTrace(FHitResult& Hit, FVector& ShootDirection);
 

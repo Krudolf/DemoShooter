@@ -52,4 +52,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float PickUpRange = 400.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UAnimInstance> PistolAnimation;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UAnimInstance> RifleAnimation;
 };
